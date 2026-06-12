@@ -2,6 +2,8 @@
 
 A static HTML/JavaScript dashboard that scans the public USAspending API for recent federal contract obligations tied to a curated watchlist of publicly traded contractors.
 
+Live site: [radar.pageplus.org](https://radar.pageplus.org)
+
 ## What it does
 
 - Calls `https://api.usaspending.gov/api/v2/search/spending_over_time/` for aggregate obligation momentum.
