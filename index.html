@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gov Contract Market Radar</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">USAspending public API</p>
+          <h1>Gov Contract Market Radar</h1>
+        </div>
+        <div class="source-pill">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span>Public federal obligations, refreshed live</span>
+        </div>
+      </header>
+
+      <main>
+        <section class="control-band" aria-label="Scan controls">
+          <div class="control-grid">
+            <label>
+              <span>Recent window</span>
+              <select id="recentDays">
+                <option value="7">7 days</option>
+                <option value="30" selected>30 days</option>
+                <option value="90">90 days</option>
+                <option value="180">180 days</option>
+              </select>
+            </label>
+
+            <label>
+              <span>Baseline</span>
+              <select id="baselineDays">
+                <option value="90">prior 90 days</option>
+                <option value="180" selected>prior 180 days</option>
+                <option value="365">prior 365 days</option>
+              </select>
+            </label>
+
+            <label>
+              <span>Minimum recent obligations</span>
+              <select id="minimumAmount">
+                <option value="0">any amount</option>
+                <option value="10000000">$10M+</option>
+                <option value="50000000" selected>$50M+</option>
+                <option value="100000000">$100M+</option>
+                <option value="500000000">$500M+</option>
+              </select>
+            </label>
+
+            <label>
+              <span>Sector</span>
+              <select id="sectorFilter">
+                <option value="all">All sectors</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="action-row">
+            <button id="runScan" class="primary-button" type="button">
+              <i data-lucide="radar"></i>
+              <span>Run scan</span>
+            </button>
+            <button id="downloadCsv" class="ghost-button" type="button" disabled>
+              <i data-lucide="download"></i>
+              <span>Export CSV</span>
+            </button>
+            <button id="resetWatchlist" class="ghost-button" type="button">
+              <i data-lucide="rotate-ccw"></i>
+              <span>Reset watchlist</span>
+            </button>
+            <p id="scanStatus" class="scan-status">Ready to scan public-company contractors.</p>
+          </div>
+        </section>
+
+        <section class="summary-strip" aria-label="Scan summary">
+          <div>
+            <span id="summaryScanned">0</span>
+            <small>companies scanned</small>
+          </div>
+          <div>
+            <span id="summaryHot">0</span>
+            <small>research-now signals</small>
+          </div>
+          <div>
+            <span id="summaryObligations">$0</span>
+            <small>recent net obligations</small>
+          </div>
+          <div>
+            <span id="summaryAsOf">Not scanned</span>
+            <small>as of</small>
+          </div>
+        </section>
+
+        <section class="workspace">
+          <aside class="watchlist-panel" aria-label="Watchlist">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Editable universe</p>
+                <h2>Public tickers</h2>
+              </div>
+              <span id="watchlistCount">0</span>
+            </div>
+
+            <form id="addCompanyForm" class="add-company-form">
+              <label>
+                <span>Ticker</span>
+                <input id="newSymbol" autocomplete="off" placeholder="AVAV" maxlength="8">
+              </label>
+              <label>
+                <span>Recipient search</span>
+                <input id="newQuery" autocomplete="off" placeholder="AEROVIRONMENT">
+              </label>
+              <button type="submit" class="compact-button">
+                <i data-lucide="plus"></i>
+                <span>Add</span>
+              </button>
+            </form>
+
+            <div id="watchlist" class="watchlist"></div>
+          </aside>
+
+          <section class="results-panel" aria-label="Signal results">
+            <div class="panel-heading results-heading">
+              <div>
+                <p class="eyebrow">Ranked by contract momentum</p>
+                <h2>Signal board</h2>
+              </div>
+              <label class="search-box">
+                <i data-lucide="search"></i>
+                <input id="resultSearch" autocomplete="off" placeholder="Filter results">
+              </label>
+            </div>
+
+            <div class="risk-note">
+              <strong>Research signal, not financial advice.</strong>
+              Contract obligations can be revised, already priced in, or too small for a large company. Aggregate totals are net obligations, so deobligations can offset new positive transactions. Validate with SEC filings, guidance, valuation, liquidity, and your own risk rules before trading.
+            </div>
+
+            <div id="emptyState" class="empty-state">
+              <i data-lucide="satellite"></i>
+              <h3>No scan yet</h3>
+              <p>Run a scan to compare recent federal contract obligations against each company's prior baseline.</p>
+            </div>
+
+            <div id="resultsGrid" class="results-grid" hidden></div>
+          </section>
+        </section>
+
+        <section id="detailPanel" class="detail-panel" hidden aria-label="Selected company detail">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Proof trail</p>
+              <h2 id="detailTitle">Company detail</h2>
+            </div>
+            <a id="financeLink" class="ghost-link" target="_blank" rel="noreferrer">
+              <i data-lucide="external-link"></i>
+              <span>Market page</span>
+            </a>
+          </div>
+          <div id="detailBody"></div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
